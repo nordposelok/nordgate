@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f6f8" />
+    <meta name="description" content="Nordgate — ворота Северного посёлка. Найдите нужный въезд и позвоните для открытия." />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Nordgate" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" type="image/png" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>Nordgate — ворота посёлка</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <a class="brand" href="./" aria-label="Nordgate, главная">
+          <img src="./icons/icon-192.png" alt="" width="44" height="44" />
+          <span>nordgate<span class="brand-caption">Северный посёлок</span></span>
+        </a>
+        <button class="icon-button" id="open-settings" aria-label="Настройки" title="Настройки">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/></svg>
+        </button>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">ВАШ ПУТЬ ДОМОЙ</p>
+          <h1 id="page-title">Ворота посёлка</h1>
+          <p class="intro-text">Выберите въезд и позвоните для открытия.</p>
+        </section>
+
+        <section class="location-panel" aria-labelledby="location-title">
+          <div class="location-topline"><span class="location-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m21 3-6.7 18-3.8-7.5L3 9.7 21 3Z"/></svg></span><span class="eyebrow" id="location-kicker">ПОДСКАЗКА РЯДОМ</span><span class="live-dot" id="location-dot" aria-hidden="true"></span></div>
+          <h2 id="location-title">Найдём ближайший въезд</h2>
+          <p id="location-description">Разрешите геопозицию — подсветим кнопку, когда вы будете рядом с воротами.</p>
+          <button class="primary-button" id="enable-location"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 3v3m0 12v3M3 12h3m12 0h3"/></svg><span>Определить ближайшие</span></button>
+          <p class="location-note" id="location-note">Координаты остаются на вашем телефоне.</p>
+        </section>
+
+        <div class="section-heading"><h2>Все въезды <span id="gate-count"></span></h2><span class="section-aside">Звонок с вашего номера</span></div>
+        <p class="notice error-notice" id="data-error" role="alert" hidden></p>
+        <button class="text-button" id="retry-data" hidden>Загрузить список повторно</button>
+        <ul class="gate-list" id="gate-list" aria-label="Ворота посёлка"></ul>
+        <p id="loading" class="loading" role="status">Загружаем список ворот…</p>
+
+        <div class="call-info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-9v.2"/></svg><p>Ворота откроются, если номер вашей SIM внесён в&nbsp;систему доступа. iPhone попросит подтвердить звонок.</p></div>
+
+        <section class="install-card" id="install-card" aria-labelledby="install-title">
+          <span class="install-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4m-2-5V6m-3 3 3-3 3 3"/></svg></span>
+          <div><h2 id="install-title">Nordgate на экране «Домой»</h2><p>Открывайте ворота как в обычном приложении.</p><button class="text-button" id="open-install">Как установить <span aria-hidden="true">↗</span></button></div>
+        </section>
+
+        <section class="update-card" id="update-card" aria-label="Обновление приложения" hidden><div><strong>Готово обновление Nordgate</strong><p>Примените, когда завершите звонок.</p></div><button class="secondary-button" id="apply-update">Обновить</button></section>
+        <details class="diagnostics" id="diagnostics" hidden><summary>Текущая позиция</summary><p id="position-text">Позиция ещё не получена.</p><p>Версия <span class="app-version"></span> · база <span id="data-version"></span></p></details>
+        <p class="sr-only" id="geo-status" role="status" aria-live="polite"></p>
+      </main>
+
+      <footer class="app-footer"><span class="connection" id="connection-status"><span aria-hidden="true"></span>Проверяем офлайн-режим</span><button class="footer-link" id="open-help">Помощь</button><span class="footer-version">v<span class="app-version"></span></span></footer>
+    </div>
+
+    <dialog id="settings-dialog" aria-labelledby="settings-title" class="sheet">
+      <div class="sheet-header"><div><p class="eyebrow">NORDGATE</p><h2 id="settings-title">Настройки</h2></div><button class="icon-button close-dialog" aria-label="Закрыть настройки"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <form id="settings-form">
+        <label class="switch-row"><span><strong>Геоподсказки</strong><small>Пока приложение открыто</small></span><input type="checkbox" name="locationEnabled" role="switch"/></label>
+        <label class="switch-row"><span><strong>Расстояния до ворот</strong><small>Показывать в списке въездов</small></span><input type="checkbox" name="showDistances" role="switch"/></label>
+        <label class="switch-row"><span><strong>Текущая позиция</strong><small>Координаты и точность для проверки</small></span><input type="checkbox" name="showCurrentPosition" role="switch"/></label>
+        <label class="period-field" for="timer-period"><strong>Период резервного запроса</strong><span><input id="timer-period" type="number" name="timerPeriodSeconds" min="1" max="600" step="1" required inputmode="numeric"/><span>сек.</span></span></label>
+        <p class="field-hint">От 1 до 600 секунд. Частотой основных обновлений геопозиции управляет iPhone.</p>
+        <p class="notice" id="settings-feedback" role="status" hidden></p>
+        <button class="primary-button full-width" type="submit">Сохранить настройки</button>
+      </form>
+    </dialog>
+
+    <dialog id="install-dialog" aria-labelledby="install-dialog-title" class="sheet">
+      <div class="sheet-header"><div><p class="eyebrow">ВСЕГДА ПОД РУКОЙ</p><h2 id="install-dialog-title">Добавить на экран «Домой»</h2></div><button class="icon-button close-dialog" aria-label="Закрыть инструкцию"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <ol class="install-steps"><li><span>1</span><div><strong>Откройте ссылку в Safari</strong><p>Если пришли из мессенджера, выберите открытие во внешнем браузере.</p></div></li><li><span>2</span><div><strong>Нажмите «Поделиться»</strong><p>Кнопка с квадратом и стрелкой вверх. Затем выберите «На экран “Домой”».</p></div></li><li><span>3</span><div><strong>Добавьте Nordgate</strong><p>Если есть переключатель «Открывать как веб-приложение», включите его. Затем нажмите «Добавить».</p></div></li></ol>
+      <p class="notice">Откройте приложение с новой иконки при включённом интернете и дождитесь отметки «Готово без интернета».</p>
+      <button class="primary-button full-width close-dialog">Понятно</button>
+    </dialog>
+
+    <dialog id="help-dialog" aria-labelledby="help-title" class="sheet">
+      <div class="sheet-header"><div><p class="eyebrow">ПОМОЩЬ</p><h2 id="help-title">Как работает Nordgate</h2></div><button class="icon-button close-dialog" aria-label="Закрыть помощь"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="help-copy"><h3>Открытие ворот</h3><p>Нажмите «Позвонить» возле нужного въезда и подтвердите вызов. Ворота проверяют номер звонящего. При двух SIM выберите линию, номер которой внесён в систему доступа.</p><p>Приложение не получает результат звонка. Если ворота не открылись, можно позвонить повторно или обратиться в правление ТСН.</p><h3>Подсказки рядом</h3><p>Зелёная кнопка подсказывает, что ворота находятся в пределах 100 метров. При удалении от ворот подсветка гаснет. Это подсказка, а не подтверждение открытия.</p><p>Геопозиция обновляется только при открытом приложении. После возвращения дождитесь свежих координат. Можно звонить и без геопозиции.</p><h3>Без мобильного интернета</h3><p>После первой загрузки сохраняются интерфейс и список ворот. Для звонка нужна голосовая связь. После очистки данных сайта потребуется снова открыть приложение с интернетом.</p><h3>Ваши данные</h3><p>Геопозиция обрабатывается на телефоне и не отправляется на сервер. Настройки сохраняются на этом устройстве. Аналитика не используется. При загрузке сайта хостинг получает обычные сетевые данные, включая IP-адрес.</p><p class="help-version">Nordgate <span class="app-version"></span> · для жителей Северного посёлка</p></div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+    <noscript><p class="noscript">Для Nordgate нужен JavaScript. Включите его в настройках браузера и откройте страницу снова.</p></noscript>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
